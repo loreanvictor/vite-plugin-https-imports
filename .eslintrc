@@ -2,7 +2,7 @@
   "root": true,
   "parser": "@typescript-eslint/parser",
   "plugins": [ "@typescript-eslint", "jest", "jest-extended"],
-  "ignorePatterns": ["dist/**/*"],
+  "ignorePatterns": ["**/dist/**/*"],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended"

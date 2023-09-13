@@ -6,12 +6,19 @@ expect.extend({ toIncludeSameMembers })
 import { join } from 'path'
 import { cp, mkdtemp, rm, access, lstat, readFile } from 'fs/promises'
 import { $ } from 'execa'
-import { build } from 'vite'
+import { build as _build } from 'vite'
 
 import plugin from '../src'
 
+export type TestFn = (build: (options?: any) => Promise<void>, utils: {
+  dir: string
+  $: (...args: unknown[]) => Promise<string>
+  ls: (path?: string) => Promise<string[]>
+  read: (file: string) => Promise<string>
+}) => Promise<void>
 
-export function scenario(name, testFn) {
+
+export function scenario(name: string, testFn: TestFn) {
   test('scnario: ' + name, async () => {
     const fixsrc = name.split(':')[0]
     const fixture = join('e2e', 'fixtures', fixsrc)
@@ -24,19 +31,20 @@ export function scenario(name, testFn) {
     await cp(fixture, dir, { recursive: true })
 
     const cmd = $({ cwd: dir })
-    const _build = async (options = {}) => {
-      await build({
+    const build = async (options = {}) => {
+      await _build({
         root: dir,
         plugins: [plugin(options)],
       })
     }
 
     try {
-      await testFn(_build, {
+      await testFn(build, {
         dir,
         $: async (...args: unknown[]) => (await (cmd as any)(...args)).stdout,
         ls: async (path = '.') => {
           const { stdout } = await cmd`ls -a ${path}`
+
           return stdout.split('\n').filter(x => x !== '.' && x !== '..')
         },
         read: async file => {
