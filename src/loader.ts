@@ -1,4 +1,5 @@
 import axios from 'axios'
+import inclusion from 'inclusion'
 
 import { Matcher } from './matcher'
 import { LoggerOptions } from './types'
@@ -7,8 +8,8 @@ import { LoggerOptions } from './types'
 export function loader(matcher: Matcher, options: LoggerOptions) {
   return async (id: string) => {
     if (matcher(id)) {
-      const chalk = (await import('chalk')).default
-      const ora = (await import('ora')).default
+      const chalk = (await inclusion('chalk')).default
+      const ora = (await inclusion('ora')).default
 
       const loading = ora({
         text: chalk.dim('downloading ') + chalk.hex('1450A3')(id),
