@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-https-imports",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "Bundles ESModules imported from remote URLs.",
   "main": "dist/commonjs/index.js",
   "module": "dist/es/index.js",
